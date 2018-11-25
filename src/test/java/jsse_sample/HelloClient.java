@@ -59,10 +59,10 @@ public class HelloClient {
     public static void main(String args[]) {
 
             HelloClient client = new HelloClient();
-            client.callRemoteMethod();
+            client.callRemoteMethod(null, null);
         }
     
-    public void callRemoteMethod() {
+    public String callRemoteMethod(String username, String password) {
     	try {
             // Make reference to SSL-based registry
             Registry registry = LocateRegistry.getRegistry(
@@ -75,20 +75,22 @@ public class HelloClient {
             
             Hello obj = (Hello) registry.lookup("HelloServer");
             
-            clientKerberosTicket = this.getTicket();
+            clientKerberosTicket = this.getTicket(username, password);
 
             String message = "blank";
             message = obj.sayHello(clientKerberosTicket);
             System.out.println(message+"\n");
+            return message;
         } catch (Exception e) {
             System.out.println("HelloClient exception: " + e.getMessage());
             e.printStackTrace();
         }
+		return "remote Method Failed";
     	
     }
-    public String getTicket() {
+    public String getTicket(String username, String password) {
     	KerberosClient kerberosClient 	= new KerberosClient();
-    	String ticket 					= 	kerberosClient.getKerberosTicket();
+    	String ticket 					= 	kerberosClient.getKerberosTicket(username, password);
     	return ticket;
     }
 }
